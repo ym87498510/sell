@@ -18,8 +18,10 @@ module.exports = {
     'generator-star-spacing': 0,
     // allow debugger during development
     'no-debugger': process.env.NODE_ENV === 'production' ? 2 : 0,
-    // 下面这句是强制要加分号，我不需要
+    // 下面这句是强制要加分号，我不需要,设为0，则不检查
     // 'semi':['error','always']
-    //
+    'semi':0,
+    // 不检查缩进格式
+    'indent':0
   }
 }
