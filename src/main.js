@@ -4,6 +4,9 @@ import App from './App'
 import goods from 'components/goods/goods'
 import seller from 'components/seller/seller'
 import ratings from 'components/ratings/ratings'
+
+import 'common/stylus/index.styl'
+
 Vue.use(VueRouter)
 // 通常new对象要赋值给某个对象，下面这句的注释意思是此句提跳过语法检查，就是说可以不需要对象来接
 // /* eslint-disable no-new */
