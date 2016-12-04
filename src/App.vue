@@ -1,6 +1,7 @@
 <template>
   <div id="app">
-    <v-header></v-header>
+    <!--v-bind缩写为:-->
+    <v-header :seller="seller"></v-header>
     <div class="tab border-1px">
       <div class="tab-item"><a v-link="{path:'/goods'}">商品</a></div>
       <div class="tab-item"><a v-link="{path:'/ratings'}">评论</a></div>
@@ -9,14 +10,33 @@
     <router-view></router-view>
   </div>
 </template>
-<script>
+<script type='text/ecmascript-6'>
   import header from 'components/header/header';
 
+  //  限定相应状态码正确时为0
+  const ERR_OK = 0;
+
   export default {
+//    data是一个函数
+    data() {
+      return {
+        seller: {}
+      }
+    },
+    created() {
+      this.$http.get('/api/seller')
+        .then((res) => { // 成功的回调
+          res = res.body;
+          if (res.errno === ERR_OK) {
+            this.seller = res.data;
+            console.log(this.seller)
+          }
+        })
+    },
     components: {
       'v-header': header
     }
-   }
+  }
 
 </script>
 <!--／css采用移动端的flex布局-->
