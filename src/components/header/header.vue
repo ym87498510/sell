@@ -15,8 +15,7 @@
         <!--为什么加v-if,因为dom一开始没有数据,渲染时会报错,当请求到这个数据后才渲染-->
         <div v-if="seller.supports" class="support">
           <span class="icon" :class='classMap[seller.supports[0].type]'></span>
-          <span class="text">{{seller.supports[0].description
-            }}</span>
+          <span class="text">{{seller.supports[0].description}}</span>
         </div>
       </div>
     </div>
@@ -25,7 +24,7 @@
 </template>
 <script type='text/ecmascript-6'>
   export default {
-//    props接受相关存参数
+//    props接受相关参数
     props: {
       seller: {
         type: Object
@@ -41,18 +40,18 @@
   @import "../../common/stylus/mixin.styl"
 
   .header
-    color: #fff
-    background: #000
+    color #fff
+    background #000
     .content-wrapper
       font-size 0
-      padding: 24px 12px 18px 24px
+      padding 24px 12px 18px 24px
       .avatar
-        display: inline-block
+        display inline-block
         vertical-align top
         img
           border-radius 2px
       .content
-        display: inline-block
+        display inline-block
         margin-left 16px
         .title
           margin 2px 0 8px 0
