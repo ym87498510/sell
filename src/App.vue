@@ -23,7 +23,7 @@
         seller: {}
       }
     },
-    created() {
+    created() { //  组件加载时执行的函数
       this.$http.get('/api/seller')
         .then((res) => { // 成功的回调
           res = res.body;
