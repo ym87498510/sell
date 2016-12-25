@@ -3,7 +3,8 @@
     <div class="menu-wrapper" v-el:menu-wrapper>
       <ul>
         <!--下面的class意思是当后面两者相等是才会设置才前面的class-->
-        <li v-for='item in goods' class="menu-item" :class="{'current':currentIndex===$index}">
+        <li v-for='item in goods' class="menu-item" :class="{'current':currentIndex===$index}"
+            @click="selectMenu($index,$event)">
           <span class="text border-1px">
             <span v-show="item.type>0" class="icon" :class="classMap[item.type]"></span>
             {{item.name}}
@@ -36,10 +37,12 @@
         </li>
       </ul>
     </div>
+    <shopcart></shopcart>
   </div>
 </template>
 <script type='text/ecmascript-6'>
   import BScroll from 'better-scroll';
+  import shopcart from 'components/shopCart/shopCart';
 
   const ERR_OK = 0;
   export default {
@@ -84,8 +87,22 @@
       })
     },
     methods: {
+      selectMenu(index, event) { // 传入event是因为在电脑上有默认事件，用以判断事件类型，只使用vue的事件
+        // event._constructed是vue派发事件的元素
+        if (!event._constructed) {
+          return
+        }
+        let foodsList = this.$els.foodsWrapper.getElementsByClassName('food-list-hook');
+        // 取得要滚到的元素
+        let el = foodsList[index]
+        // 滚动到，并设置时间
+        this.foodsScroll.scrollToElement(el, 500)
+      },
       _initScroll() {
-        this.menuScroll = new BScroll(this.$els.menuWrapper, {});
+        this.menuScroll = new BScroll(this.$els.menuWrapper, {
+          // 由于better-scroll阻止了默认事件，传入以下参数，即可允许点击
+          click: true
+        });
         this.foodsScroll = new BScroll(this.$els.foodsWrapper, {
           probeType: 3 // 表示监测实时滚动的位置
         });
@@ -103,6 +120,9 @@
           this.listHeight.push(height)
         }
       }
+    },
+    components: {
+      shopcart
     }
   }
 </script>
