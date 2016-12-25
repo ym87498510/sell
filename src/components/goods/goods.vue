@@ -37,7 +37,7 @@
         </li>
       </ul>
     </div>
-    <shopcart></shopcart>
+    <shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
   </div>
 </template>
 <script type='text/ecmascript-6'>
@@ -47,7 +47,7 @@
   const ERR_OK = 0;
   export default {
     props: {
-      weller: {
+      seller: {
         type: Object
       }
     },
