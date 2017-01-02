@@ -13,7 +13,7 @@
 <script type='text/ecmascript-6'>
   import header from 'components/header/header';
 
-  //  限定相应状态码正确时为0
+  //  声明常量限定相应状态码正确时为0
   const ERR_OK = 0;
 
   export default {
