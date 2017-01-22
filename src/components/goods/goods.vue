@@ -40,7 +40,8 @@
         </li>
       </ul>
     </div>
-    <shopcart :delivery-price="seller.deliveryPrice" :min-price="seller.minPrice"></shopcart>
+    <shopcart v-ref:shopcart :select-foods="selectFoods" :delivery-price="seller.deliveryPrice"
+              :min-price="seller.minPrice"></shopcart>
   </div>
 </template>
 <script type='text/ecmascript-6'>
@@ -72,6 +73,17 @@
           }
         }
         return 0
+      },
+      selectFoods() {
+        let foods = []
+        this.goods.forEach((good) => {
+          good.foods.forEach((food) => {
+            if (food.count) {
+              foods.push(food)
+            }
+          })
+        })
+        return foods
       }
     },
     created() {
@@ -102,6 +114,12 @@
         // 滚动到，并设置时间
         this.foodsScroll.scrollToElement(el, 500)
       },
+      _drop(target) {
+//          优化体验，异步执行下落动画
+        this.$nextTick(() => {
+          this.$refs.shopcart.drop(target)
+        })
+      },
       _initScroll() {
         this.menuScroll = new BScroll(this.$els.menuWrapper, {
           // 由于better-scroll阻止了默认事件，传入以下参数，即可允许点击
@@ -128,6 +146,11 @@
     },
     components: {
       shopcart, cartcontrol
+    },
+    events: {
+      'cart.add'(target) {
+        this._drop(target)
+      }
     }
   }
 </script>
