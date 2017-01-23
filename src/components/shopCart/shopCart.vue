@@ -44,7 +44,6 @@
         default: 0
       }
     },
-
     data() {
       return {
         balls: [
@@ -62,14 +61,14 @@
         let total = 0;
         this.selectFoods.forEach((food) => {
           total += food.price * food.count
-      })
+        })
         return total;
       },
       totalCount() {
         let count = 0;
         this.selectFoods.forEach((food) => {
           count += food.count
-      })
+        })
         return count;
       },
       payDesc() {
@@ -90,11 +89,11 @@
     },
     methods: {
       drop(el) {
-        for (let i = 0; i < this.balls.legth; i++) {
+        for (let i = 0; i < this.balls.length; i++) {
           let ball = this.balls[i]
           if (!ball.show) {
-            ball.show = true
             ball.el = el
+            ball.show = true
             this.dropBalls.push(ball)
             return
           }
@@ -116,8 +115,8 @@
               el.style.webkitTransform = `translate3d(0,${y}px,0)`
               el.style.transform = `translate3d(0,${y}px,0)`
               let inner = el.getElementsByClassName('inner-hook')[0]
-              inner.style.webkitTransform = `translate3d(${x},0,0)`
-              inner.style.transform = `translate3d(${x},0,0)`
+              inner.style.webkitTransform = `translate3d(${x}px,0,0)`
+              inner.style.transform = `translate3d(${x}px,0,0)`
             }
           }
         },
@@ -248,5 +247,4 @@
             border-radius 50%
             background rgb(0, 160, 220)
             transition all 0.4s linear
-
 </style>

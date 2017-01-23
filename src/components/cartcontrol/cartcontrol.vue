@@ -36,10 +36,10 @@
         if (!event._constructed) {
           return
         }
-//        个人感觉此处无需判断，因为，如果不存在，就不能点击了
-//        if (this.food.count) {
-        this.food.count--;
-//        }
+
+        if (this.food.count > 0) {
+          this.food.count--;
+        }
       }
     }
   }
@@ -82,5 +82,4 @@
       font-size 24px
       line-height 24px
       color rgb(0, 160, 220)
-
 </style>
