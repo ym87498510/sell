@@ -17,7 +17,7 @@
         <li v-for="item in goods" class="food-list food-list-hook">
           <h1 class="title">{{item.name}}</h1>
           <ul>
-            <li v-for="food in item.foods" class="food-item border-1px">
+            <li @click="selectFood(food,$event)" v-for="food in item.foods" class="food-item border-1px">
               <div class="icon">
                 <img width="57" height="57" :src=food.icon>
               </div>
@@ -43,11 +43,13 @@
     <shopcart v-ref:shopcart :select-foods="selectFoods" :delivery-price="seller.deliveryPrice"
               :min-price="seller.minPrice"></shopcart>
   </div>
+  <food :food="selectedFood" v-ref:food></food>
 </template>
 <script type='text/ecmascript-6'>
   import BScroll from 'better-scroll';
   import shopcart from 'components/shopCart/shopCart';
   import cartcontrol from 'components/cartcontrol/cartcontrol';
+  import food from 'components/food/food';
 
   const ERR_OK = 0;
   export default {
@@ -60,7 +62,8 @@
       return {
         goods: [],
         listHeight: [], // 保存商品栏的累加后的各个高度
-        scrollY: 0
+        scrollY: 0,
+        selectedFood: {}
       }
     },
     computed: {
@@ -114,6 +117,13 @@
         // 滚动到，并设置时间
         this.foodsScroll.scrollToElement(el, 500)
       },
+      selectFood(food, event) {
+        if (!event._constructed) {
+          return
+        }
+        this.selectedFood = food;
+        this.$refs.food.show()
+      },
       _drop(target) {
 //          优化体验，异步执行下落动画
         this.$nextTick(() => {
@@ -145,7 +155,7 @@
       }
     },
     components: {
-      shopcart, cartcontrol
+      shopcart, cartcontrol, food
     },
     events: {
       'cart.add'(target) {
@@ -257,7 +267,6 @@
               text-decoration line-through
               font-size 10px
               color rgb(147, 153, 159)
-
           .cartcontrol-wrapper
             position absolute
             right 0
