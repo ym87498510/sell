@@ -18,7 +18,7 @@ export function formatDate(date, fmt) {
   }
   return fmt
 }
-// 拼完后截取最后但两位
+// 拼完后截取最后两位
 function padLeftZero(str) {
   return ('00' + str).substr(str.length)
 }
