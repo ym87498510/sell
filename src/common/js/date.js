@@ -1,4 +1,4 @@
-export function formatDate(date, fmt) {
+export const formatDate = (date, fmt) => {
   if (/(y+)/.test(fmt)) {
     // 匹配y+，替换成年份，转化成字符串，并按y但个数从后面截取
     fmt = fmt.replace(RegExp.$1, (date.getFullYear() + '').substr(4 - RegExp.$1.length))
@@ -19,6 +19,6 @@ export function formatDate(date, fmt) {
   return fmt
 }
 // 拼完后截取最后两位
-function padLeftZero(str) {
+const padLeftZero = (str) => {
   return ('00' + str).substr(str.length)
 }
