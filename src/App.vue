@@ -7,10 +7,12 @@
       <div class="tab-item"><a v-link="{path:'/ratings'}">评论</a></div>
       <div class="tab-item"><a v-link="{path:'/seller'}">商家</a></div>
     </div>
-    <router-view :seller="seller"></router-view>
+    <!--keep-alive路由状态保留-->
+    <router-view :seller="seller" keep-alive></router-view>
   </div>
 </template>
 <script type='text/ecmascript-6'>
+  import {urlParse} from 'common/js/util'
   import header from 'components/header/header';
 
   //  声明常量限定相应状态码正确时为0
@@ -20,15 +22,22 @@
 //    data是一个函数
     data() {
       return {
-        seller: {}
+        seller: {
+          id: (() => {
+            let queryParam = urlParse()
+            return queryParam.id
+          })()
+        }
       }
     },
     created() { //  组件加载时执行的函数
-      this.$http.get('/api/seller')
+      this.$http.get('/api/seller?id=' + this.seller.id)
         .then((res) => { // 成功的回调
           res = res.body;
           if (res.errno === ERR_OK) {
-            this.seller = res.data;
+//            this.seller = res.data;
+//            下一行为模拟带码，假设后段返回了带ID带数据
+            this.seller = Object.assign({}, this.seller, res.data)
           }
         })
     },
@@ -36,7 +45,6 @@
       'v-header': header
     }
   }
-
 </script>
 <!--／css采用移动端的flex布局-->
 <style lang='stylus' rel="stylesheet/stylus">
@@ -48,7 +56,7 @@
       width: 100%
       height: 40px
       line-height: 40px
-      // border-bottom: 1px solid rgba(7, 17, 27, 0.1)
+      /*border-bottom: 1px solid rgba(7, 17, 27, 0.1)*/
       border-1px(rgba(7, 17, 27, 0.1))
       .tab-item
         flex: 1
