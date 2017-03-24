@@ -15,7 +15,7 @@
   import {urlParse} from 'common/js/util'
   import header from 'components/header/header';
 
-  //  声明常量限定相应状态码正确时为0
+  //  声明常量限定响应状态码正确时为0
   const ERR_OK = 0;
 
   export default {
