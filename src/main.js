@@ -35,6 +35,6 @@ router.map({
 
 router.start(app, 'app')
 
-// 默认路由
+// 默认路由到商品
 router.go('/goods')
 
