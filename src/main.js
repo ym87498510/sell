@@ -17,24 +17,50 @@ Vue.use(VueResource);
 //   components: {App}
 // })
 // 个人感觉不需要下面这句，因为上面已经定义了
-let app = Vue.extend(App)
-let router = new VueRouter({linkActiveClass: 'active'})
-
-router.map({
-  '/goods': {
-    component: goods
-  },
-  '/seller': {
-    component: seller
-  },
-  '/ratings': {
-    component: ratings
-  }
-})
-// 将app组建挂载到app容器中，前面是组件，后面是容器,其是可以直接引用App,就不需要上面的let app = Vue.extend(App)了
-
-router.start(app, 'app')
-
-// 默认路由
+// let app = Vue.extend(App)
+// let router = new VueRouter({linkActiveClass: 'active'})
+//
+// router.map({
+//   '/goods': {
+//     component: goods
+//   },
+//   '/seller': {
+//     component: seller
+//   },
+//   '/ratings': {
+//     component: ratings
+//   }
+// })
+// // 将app组建挂载到app容器中，前面是组件，后面是容器,其是可以直接引用App,就不需要上面的let app = Vue.extend(App)了
+//
+// router.start(app, 'app')
+//
+// // 默认路由
 // router.go('/goods')
 
+// up to vue2.0
+const routes = [{
+  path: '/',
+  component: goods
+}, {
+  path: '/goods',
+  component: goods
+}, {
+  path: '/ratings',
+  component: ratings
+}, {
+  path: '/seller',
+  component: seller
+}];
+
+const router = new VueRouter({
+  linkActiveClass: 'active',
+  routes
+});
+
+/* eslint-disable no-new */
+new Vue({
+  el: '#app',
+  router,
+  render: h => h(App)
+})

@@ -1,48 +1,56 @@
 <template>
-  <div class="shopcart">
-    <div class="content" @click="toggleList">
-      <div class="content-left">
-        <div class="logo-wrapper">
-          <div class="logo" :class="{'highlight':totalCount>0}">
-            <span class="icon-shopping_cart" :class="{'highlight':totalCount>0}"></span>
+  <div>
+    <div class="shopcart">
+      <div class="content" @click="toggleList">
+        <div class="content-left">
+          <div class="logo-wrapper">
+            <div class="logo" :class="{'highlight':totalCount>0}">
+              <span class="icon-shopping_cart" :class="{'highlight':totalCount>0}"></span>
+            </div>
+            <div v-show="totalCount>0" class="num">{{totalCount}}</div>
           </div>
-          <div v-show="totalCount>0" class="num">{{totalCount}}</div>
+          <div class="price" :class="{'highlight':totalPrice>0}">¥{{totalPrice}}</div>
+          <div class="desc">另需配送费¥{{deliveryPrice}}元</div>
         </div>
-        <div class="price" :class="{'highlight':totalPrice>0}">¥{{totalPrice}}</div>
-        <div class="desc">另需配送费¥{{deliveryPrice}}元</div>
+        <div class="content-right" @click.stop.prevent="pay">
+          <div class="pay" :class="payClass">
+            {{payDesc}}
+
+
+          </div>
+        </div>
       </div>
-      <div class="content-right" @click.stop.prevent="pay">
-        <div class="pay" :class="payClass">
-          {{payDesc}}
+      <div class="ball-container">
+        <div v-for="ball in balls">
+          <transition name="drop" @before-enter="beforeDrop" @enter="dropping" @after-enter="afterDrop">
+            <div v-show="ball.show" class="ball">
+              <div class="inner inner-hook"></div>
+            </div>
+          </transition>
+        </div>
+      </div>
+      <div class="shopcart-list" v-show="listShow" transition="fold">
+        <div class="list-header">
+          <h1 class="title">购物车</h1>
+          <span class="empty" @click="empty">清空</span>
+        </div>
+        <div class="list-content" ref="listContent">
+          <ul>
+            <li v-for="food in selectFoods" class="food">
+              <span class="name">{{food.name}}</span>
+              <div class="price">
+                <span>¥{{food.price * food.count}}</span>
+              </div>
+              <div class="cartcontrol-wrapper">
+                <cartcontrol @add="addFood" :food="food"></cartcontrol>
+              </div>
+            </li>
+          </ul>
         </div>
       </div>
     </div>
-    <div class="ball-container">
-      <div transition="drop" v-for="ball in balls" v-show="ball.show" class="ball">
-        <div class="inner inner-hook"></div>
-      </div>
-    </div>
-    <div class="shopcart-list" v-show="listShow" transition="fold">
-      <div class="list-header">
-        <h1 class="title">购物车</h1>
-        <span class="empty" @click="empty">清空</span>
-      </div>
-      <div class="list-content" v-el:list-content>
-        <ul>
-          <li v-for="food in selectFoods" class="food">
-            <span class="name">{{food.name}}</span>
-            <div class="price">
-              <span>¥{{food.price*food.count}}</span>
-            </div>
-            <div class="cartcontrol-wrapper">
-              <cartcontrol :food="food"></cartcontrol>
-            </div>
-          </li>
-        </ul>
-      </div>
-    </div>
+    <div class="list-mask" v-show="listShow" @click="hideList" transition="fade"></div>
   </div>
-  <div class="list-mask" v-show="listShow" @click="hideList" transition="fade"></div>
 </template>
 
 <script type="text/ecmascript-6">
@@ -119,7 +127,7 @@
           this.$nextTick(() => {
 //              避免每次都实例化对象做个判断，存在就不用实例化
             if (!this.scroll) {
-              this.scroll = new BScroll(this.$els.listContent, {
+              this.scroll = new BScroll(this.$refs.listContent, {
                 click: true
               })
             } else {
@@ -161,46 +169,46 @@
           return
         }
         window.alert(`支付${this.totalPrice}元`)
-      }
-    },
-    transitions: {
-      drop: {
-        beforeEnter(el) {
-          let count = this.balls.length
-          while (count--) {
-            let ball = this.balls[count]
-            if (ball.show) {
+      },
+      addFood(target) {
+          this.drop(target)
+      },
+      beforeDrop(el) {
+        let count = this.balls.length
+        while (count--) {
+          let ball = this.balls[count]
+          if (ball.show) {
 //                  获取元素相对与视口的位置
-              let rect = ball.el.getBoundingClientRect();
-              let x = rect.left - 32;
-              let y = -(window.innerHeight - rect.top - 22);
-              el.style.display = '';
-              el.style.webkitTransform = `translate3d(0,${y}px,0)`
-              el.style.transform = `translate3d(0,${y}px,0)`
-              let inner = el.getElementsByClassName('inner-hook')[0]
-              inner.style.webkitTransform = `translate3d(${x}px,0,0)`
-              inner.style.transform = `translate3d(${x}px,0,0)`
-            }
+            let rect = ball.el.getBoundingClientRect();
+            let x = rect.left - 32;
+            let y = -(window.innerHeight - rect.top - 22);
+            el.style.display = '';
+            el.style.webkitTransform = `translate3d(0,${y}px,0)`
+            el.style.transform = `translate3d(0,${y}px,0)`
+            let inner = el.getElementsByClassName('inner-hook')[0]
+            inner.style.webkitTransform = `translate3d(${x}px,0,0)`
+            inner.style.transform = `translate3d(${x}px,0,0)`
           }
-        },
-        enter(el) {
+        }
+      },
+      dropping(el, done) {
 //          触发浏览器重绘
-          /* eslint-disable no-unused-vars */
-          let rf = el.offsetHeight;
-          this.$nextTick(() => {
-            el.style.webkitTransform = 'translate3d(0,0,0)';
-            el.style.transform = 'translate3d(0,0,0)';
-            let inner = el.getElementsByClassName('inner-hook')[0];
-            inner.style.webkitTransform = 'translate3d(0,0,0)';
-            inner.style.transform = 'translate3d(0,0,0)'
-          })
-        },
-        afterEnter(el) {
-          let ball = this.dropBalls.shift();
-          if (ball) {
-            ball.show = false;
-            el.style.display = 'none'
-          }
+        /* eslint-disable no-unused-vars */
+        let rf = el.offsetHeight;
+        this.$nextTick(() => {
+          el.style.webkitTransform = 'translate3d(0,0,0)';
+          el.style.transform = 'translate3d(0,0,0)';
+          let inner = el.getElementsByClassName('inner-hook')[0];
+          inner.style.webkitTransform = 'translate3d(0,0,0)';
+          inner.style.transform = 'translate3d(0,0,0)';
+          el.addEventListener('transitionend', done);
+        })
+      },
+      afterDrop(el) {
+        let ball = this.dropBalls.shift();
+        if (ball) {
+          ball.show = false;
+          el.style.display = 'none'
         }
       }
     },

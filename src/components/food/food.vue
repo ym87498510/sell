@@ -1,5 +1,5 @@
 <template>
-  <div v-show="showFlag" class="food" transition="move" v-el:food>
+  <div v-show="showFlag" class="food" transition="move" ref="food">
     <div class="food-content">
       <div class="image-header">
         <img :src="food.image">
@@ -30,7 +30,7 @@
       <split></split>
       <div class="rating">
         <h1 class="title">商品评价</h1>
-        <ratingselect :select-type="selectType" :only-content="onlyContent" :desc="desc"
+        <ratingselect @select="typeSelect" @toggle="contentToggle" :select-type="selectType" :only-content="onlyContent" :desc="desc"
                       :ratings="food.ratings"></ratingselect>
         <div class="rating-wrapper">
           <ul v-show="food.ratings && food.ratings.length">
@@ -90,7 +90,7 @@
 //        bscroll帮定给需要在某个范围内滚动的容器
         this.$nextTick(() => {
           if (!this.scroll) {
-            this.scroll = new BScroll(this.$els.food, {
+            this.scroll = new BScroll(this.$refs.food, {
               click: true
             })
           } else {
@@ -106,7 +106,7 @@
           return
         }
 //        在添加第一个的时候出发动画，但由于点击后按钮被隐藏，没法获取按钮的位置，小球位置会有问题，所以添加动画，延迟按钮消失
-        this.$dispatch('cart.add', event.target)
+        this.$emit('add', event.target)
         Vue.set(this.food, 'count', 1)
       },
       needShow(type, text) {
@@ -118,10 +118,8 @@
         } else {
           return type === this.selectType
         }
-      }
-    },
-    events: {
-      'ratingtype.select'(type) {
+      },
+      typeSelect(type) {
         this.selectType = type
 //        更改后刷新滚动位置，保证下拉的回弹位置正确
 //        因为vue的dom更新是异步的，并不一定能取到最新的dom位置，所以要在下一步的异步操作中刷新
@@ -129,8 +127,8 @@
           this.scroll.refresh()
         })
       },
-      'content.toggle'(onlyContent) {
-        this.onlyContent = onlyContent
+      contentToggle() {
+        this.onlyContent = !this.onlyContent
         this.$nextTick(() => {
           this.scroll.refresh()
         })

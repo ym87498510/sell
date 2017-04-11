@@ -1,5 +1,5 @@
 <template>
-  <div class="ratings" v-el:ratings>
+  <div class="ratings" ref="ratings">
     <div class="ratings-content">
       <div class="overview">
         <div class="overview-left">
@@ -25,7 +25,7 @@
         </div>
       </div>
       <split></split>
-      <ratingselect :select-type="selectType" :only-content="onlyContent" :desc="desc"
+      <ratingselect @select="typeSelect" @toggle="contentToggle" :select-type="selectType" :only-content="onlyContent"
                     :ratings="ratings"></ratingselect>
       <div class="rating-wrapper">
         <ul>
@@ -85,6 +85,20 @@
         } else {
           return type === this.selectType
         }
+      },
+      typeSelect(type) {
+        this.selectType = type
+//        更改后刷新滚动位置，保证下拉的回弹位置正确
+//        因为vue的dom更新是异步的，并不一定能取到最新的dom位置，所以要在下一步的异步操作中刷新
+        this.$nextTick(() => {
+          this.scroll.refresh()
+        })
+      },
+      contentToggle() {
+        this.onlyContent = !this.onlyContent
+        this.$nextTick(() => {
+          this.scroll.refresh()
+        })
       }
     },
     filters: {
@@ -99,28 +113,12 @@
         if (res.errno === ERR_OK) {
           this.ratings = res.data
           this.$nextTick(() => {
-            this.scroll = new BScroll(this.$els.ratings, {
+            this.scroll = new BScroll(this.$refs.ratings, {
               click: true
             })
           })
         }
       })
-    },
-    events: {
-      'ratingtype.select'(type) {
-        this.selectType = type
-//        更改后刷新滚动位置，保证下拉的回弹位置正确
-//        因为vue的dom更新是异步的，并不一定能取到最新的dom位置，所以要在下一步的异步操作中刷新
-        this.$nextTick(() => {
-          this.scroll.refresh()
-        })
-      },
-      'content.toggle'(onlyContent) {
-        this.onlyContent = onlyContent
-        this.$nextTick(() => {
-          this.scroll.refresh()
-        })
-      }
     },
     components: {
       star, ratingselect, split
